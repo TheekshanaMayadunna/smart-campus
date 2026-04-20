@@ -11,7 +11,7 @@ public class CreateTicketRequest {
   @NotBlank
   private String category;
   @NotBlank
-  @Size(min = 10, max = 2000)
+  @Size(min = 10, max = 500)
   private String description;
   @NotBlank
   private String priority;

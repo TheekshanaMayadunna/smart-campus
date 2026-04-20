@@ -10,9 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,18 +21,13 @@ public class TicketController {
   private final TicketService service;
 
   @PostMapping
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<TicketResponse> create(
-      @Valid @RequestBody CreateTicketRequest req,
-      @AuthenticationPrincipal UserDetails user) {
-    // Assuming user.getUsername() is the userId as String, need to parse
-    Long userId = Long.parseLong(user.getUsername()); // Adjust based on your UserDetails
-    return ResponseEntity.status(201)
-        .body(service.createTicket(req, userId));
+  public ResponseEntity<TicketResponse> create(@Valid @RequestBody CreateTicketRequest req) {
+    // For development, use a dummy user ID
+    Long userId = 1L; // TODO: Replace with proper authentication
+    return ResponseEntity.status(201).body(service.createTicket(req, userId));
   }
 
   @GetMapping
-  @PreAuthorize("hasRole('ADMIN')")
   public Page<TicketResponse> getAllTickets(
       TicketFilterRequest filterRequest,
       @PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
@@ -43,41 +35,35 @@ public class TicketController {
   }
 
   @GetMapping("/my")
-  @PreAuthorize("isAuthenticated()")
   public Page<TicketResponse> getMyTickets(
-      @AuthenticationPrincipal UserDetails user,
       TicketFilterRequest filterRequest,
       @PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
-    Long userId = Long.parseLong(user.getUsername());
+    // For development, use a dummy user ID
+    Long userId = 1L; // TODO: Replace with proper authentication
     return service.getMyTickets(userId, filterRequest, pageable);
   }
 
   @GetMapping("/{id}")
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<TicketResponse> getTicketById(
-      @PathVariable Long id,
-      @AuthenticationPrincipal UserDetails user) {
-    Long userId = Long.parseLong(user.getUsername());
+  public ResponseEntity<TicketResponse> getTicketById(@PathVariable Long id) {
+    // For development, use a dummy user ID
+    Long userId = 1L; // TODO: Replace with proper authentication
     TicketResponse response = service.getTicketById(id, userId);
     return ResponseEntity.ok(response);
   }
 
   @PutMapping("/{id}")
-  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<TicketResponse> updateTicket(
       @PathVariable Long id,
-      @Valid @RequestBody UpdateTicketRequest req,
-      @AuthenticationPrincipal UserDetails user) {
-    Long userId = Long.parseLong(user.getUsername());
+      @Valid @RequestBody UpdateTicketRequest req) {
+    // For development, use a dummy user ID
+    Long userId = 1L; // TODO: Replace with proper authentication
     return ResponseEntity.ok(service.updateTicket(id, req, userId));
   }
 
   @DeleteMapping("/{id}")
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<Void> deleteTicket(
-      @PathVariable Long id,
-      @AuthenticationPrincipal UserDetails user) {
-    Long userId = Long.parseLong(user.getUsername());
+  public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
+    // For development, use a dummy user ID
+    Long userId = 1L; // TODO: Replace with proper authentication
     service.deleteTicket(id, userId);
     return ResponseEntity.noContent().build();
   }

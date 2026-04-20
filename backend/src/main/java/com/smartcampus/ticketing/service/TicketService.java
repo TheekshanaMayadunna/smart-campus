@@ -61,7 +61,19 @@ public class TicketService {
   @Transactional
   public TicketResponse createTicket(CreateTicketRequest request, Long reporterId) {
     UserEntity reporter = userRepository.findById(reporterId)
-        .orElseThrow(() -> new BadRequestException("Reporter not found"));
+        .orElseGet(() -> {
+          // Create default user for development
+          UserEntity defaultUser = UserEntity.builder()
+              .userId(reporterId)
+              .username("default" + reporterId)
+              .firstName("Default")
+              .lastName("User")
+              .email("default" + reporterId + "@example.com")
+              .role("STUDENT")
+              .isActive(true)
+              .build();
+          return userRepository.save(defaultUser);
+        });
 
     String normalizedDescription = normalizeText(request.getDescription());
     String normalizedLocation = normalizeText(request.getLocation());
@@ -213,8 +225,8 @@ public class TicketService {
     if (resourceId != null && !resourceValidationPort.resourceExists(resourceId)) {
       throw new BadRequestException("resourceId does not exist");
     }
-    if (normalizedDescription == null || normalizedDescription.length() < 10 || normalizedDescription.length() > 2000) {
-      throw new BadRequestException("Description is required and must be between 10 and 2000 characters");
+    if (normalizedDescription == null || normalizedDescription.length() < 10 || normalizedDescription.length() > 500) {
+      throw new BadRequestException("Description is required and must be between 10 and 500 characters");
     }
     if (normalizedPreferredContact == null || !CONTACT_PATTERN.matcher(normalizedPreferredContact).matches()) {
       throw new BadRequestException("preferredContact must be a valid email or phone number");

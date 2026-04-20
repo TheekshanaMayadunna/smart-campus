@@ -61,10 +61,12 @@ const MyTicketsPage = () => {
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTicket, setEditingTicket] = useState(null)
-  const filters = useMemo(() => ({ page: 0, size: 10 }), [])
+  const [currentPage, setCurrentPage] = useState(0)
+  const filters = useMemo(() => ({ page: currentPage, size: 10 }), [currentPage])
 
   const { data, isLoading, isError } = useMyTickets(filters)
   const tickets = getTickets(data)
+  const totalPages = data?.totalPages || 0
 
   const {
     register,
@@ -185,8 +187,14 @@ const MyTicketsPage = () => {
               </span>
             </div>
 
-            <h3 style={styles.cardTitle}>{ticket.location}</h3>
-            <p style={styles.cardText}>{ticket.description}</p>
+            <h3 style={styles.cardTitle}>
+              {ticket.location || `Resource #${ticket.resourceId}` || 'No location/resource'}
+            </h3>
+            <p style={styles.cardText}>
+              {ticket.description.length > 100
+                ? `${ticket.description.substring(0, 100)}...`
+                : ticket.description}
+            </p>
 
             <div style={styles.cardMeta}>
               <span style={{ ...styles.badge, backgroundColor: priorityColors[ticket.priority] ?? '#6b7280' }}>
@@ -218,6 +226,30 @@ const MyTicketsPage = () => {
           </article>
         ))}
       </section>
+
+      {totalPages > 1 && (
+        <div style={styles.pagination}>
+          <button
+            type="button"
+            onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
+            disabled={currentPage === 0}
+            style={styles.paginationButton}
+          >
+            Previous
+          </button>
+          <span style={styles.pageInfo}>
+            Page {currentPage + 1} of {totalPages}
+          </span>
+          <button
+            type="button"
+            onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
+            disabled={currentPage >= totalPages - 1}
+            style={styles.paginationButton}
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       <CreateTicketModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
@@ -309,8 +341,8 @@ const MyTicketsPage = () => {
                     required: 'Description is required',
                     validate: (value) => value.trim().length > 0 || 'Description is required',
                     maxLength: {
-                      value: 2000,
-                      message: 'Description cannot exceed 2000 characters',
+                      value: 500,
+                      message: 'Description cannot exceed 500 characters',
                     },
                   })}
                 />
@@ -360,6 +392,7 @@ const styles = {
   grid: {
     display: 'grid',
     gap: '0.85rem',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
   },
   card: {
     border: '1px solid #e5e7eb',
@@ -476,6 +509,25 @@ const styles = {
     justifyContent: 'flex-end',
     gap: '0.5rem',
     marginTop: '0.5rem',
+  },
+  pagination: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '1rem',
+    marginTop: '1rem',
+  },
+  paginationButton: {
+    border: '1px solid #d0d5dd',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    color: '#111827',
+    padding: '0.5rem 0.85rem',
+    cursor: 'pointer',
+  },
+  pageInfo: {
+    fontSize: '0.9rem',
+    color: '#6b7280',
   },
 }
 

@@ -38,10 +38,13 @@ const CreateTicketModal = ({ isOpen, onClose }) => {
 
   const createTicketMutation = useMutation({
     mutationFn: (payload) => createTicket(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['myTickets'] })
       reset()
       onClose()
+      if (data.warningMessage) {
+        alert(data.warningMessage)
+      }
     },
   })
   useEffect(() => {
@@ -180,8 +183,8 @@ const CreateTicketModal = ({ isOpen, onClose }) => {
                 validate: (value) =>
                   value.trim().length > 0 || 'Description is required',
                 maxLength: {
-                  value: 2000,
-                  message: 'Description cannot exceed 2000 characters',
+                  value: 500,
+                  message: 'Description cannot exceed 500 characters',
                 },
               })}
               placeholder="Describe the issue"
