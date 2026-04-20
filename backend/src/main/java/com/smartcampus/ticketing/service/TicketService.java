@@ -15,6 +15,7 @@ import com.smartcampus.ticketing.event.TicketCreatedEvent;
 import com.smartcampus.ticketing.exception.BadRequestException;
 import com.smartcampus.ticketing.exception.ConflictException;
 import com.smartcampus.ticketing.exception.TicketNotFoundException;
+import com.smartcampus.ticketing.exception.UnauthorizedException;
 import com.smartcampus.ticketing.integration.resource.ResourceValidationPort;
 import com.smartcampus.ticketing.repository.TicketAttachmentRepository;
 import com.smartcampus.ticketing.repository.TicketAuditRepository;
@@ -71,19 +72,7 @@ public class TicketService {
   @Transactional
   public TicketResponse createTicket(CreateTicketRequest request, MultipartFile[] attachments, Long reporterId) {
     UserEntity reporter = userRepository.findById(reporterId)
-        .orElseGet(() -> {
-          // Create default user for development
-          UserEntity defaultUser = UserEntity.builder()
-              .userId(reporterId)
-              .username("default" + reporterId)
-              .firstName("Default")
-              .lastName("User")
-              .email("default" + reporterId + "@example.com")
-              .role("STUDENT")
-              .isActive(true)
-              .build();
-          return userRepository.save(defaultUser);
-        });
+        .orElseThrow(() -> new UnauthorizedException("Not authenticated"));
 
     String normalizedDescription = normalizeText(request.getDescription());
     String normalizedLocation = normalizeText(request.getLocation());

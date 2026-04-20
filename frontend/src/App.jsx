@@ -1,39 +1,39 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import MyTicketsPage from './modules/tickets/pages/MyTicketsPage'
-import MockLoginPage from './modules/tickets/pages/MockLoginPage'
-import { getMockUser, hasAnyRole, ROLES } from './modules/tickets/auth/mockAuth'
+import AuthPage from './modules/tickets/pages/AuthPage'
+import authApi from './modules/tickets/api/authApi'
 
-const RequireMockAuth = ({ children }) => {
+const RequireAuth = ({ children }) => {
   const location = useLocation()
-  const user = getMockUser()
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['authUser'],
+    queryFn: () => authApi.me(),
+    retry: false,
+    refetchOnWindowFocus: false,
+  })
 
-  if (!user) {
+  if (isLoading) {
+    return <main style={{ padding: '1rem' }}>Checking session...</main>
+  }
+
+  if (isError || !data?.user) {
     return <Navigate to="/login" replace state={{ from: location }} />
   }
 
   return children
 }
 
-const RequireRole = ({ roles, children }) => {
-  const user = getMockUser()
-  if (!hasAnyRole(user, roles)) {
-    return <Navigate to="/my-tickets" replace />
-  }
-  return children
-}
-
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<MockLoginPage />} />
+      <Route path="/login" element={<AuthPage />} />
       <Route
         path="/my-tickets"
         element={
-          <RequireMockAuth>
-            <RequireRole roles={[ROLES.STUDENT, ROLES.TECHNICIAN, ROLES.ADMIN]}>
-              <MyTicketsPage />
-            </RequireRole>
-          </RequireMockAuth>
+          <RequireAuth>
+            <MyTicketsPage />
+          </RequireAuth>
         }
       />
       <Route path="*" element={<Navigate to="/my-tickets" replace />} />

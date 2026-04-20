@@ -6,7 +6,8 @@ import TicketDetailModal from '../components/TicketDetailModal'
 import { useMyTickets } from '../hooks/useMyTickets'
 import { useTicket } from '../hooks/useTicket'
 import { deleteTicket, updateTicket } from '../api/ticketApi'
-import { getMockUser, logoutMockUser, ROLES } from '../auth/mockAuth'
+import { useAuthUser } from '../hooks/useAuthUser'
+import authApi from '../api/authApi'
 
 const categoryOptions = [
   'ELECTRICAL',
@@ -61,9 +62,10 @@ const getTickets = (data) => {
 }
 
 const MyTicketsPage = () => {
-  const currentUser = getMockUser()
-  const canModifyTickets = currentUser?.role === ROLES.STUDENT
   const queryClient = useQueryClient()
+  const { data: authData } = useAuthUser()
+  const currentUser = authData?.user
+  const canModifyTickets = currentUser?.role === 'STUDENT'
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTicket, setEditingTicket] = useState(null)
   const [viewingTicketId, setViewingTicketId] = useState(null)
@@ -130,6 +132,14 @@ const MyTicketsPage = () => {
     },
   })
 
+  const logoutMutation = useMutation({
+    mutationFn: () => authApi.logout(),
+    onSuccess: () => {
+      queryClient.clear()
+      window.location.href = '/login'
+    },
+  })
+
   const onSubmitEdit = (values) => {
     if (!editingTicket) {
       return
@@ -178,7 +188,7 @@ const MyTicketsPage = () => {
         <h1 style={styles.title}>My Tickets</h1>
         <div style={styles.headerRight}>
           <div style={styles.userChip}>
-            <strong>{currentUser?.name ?? 'Guest'}</strong>
+            <strong>{currentUser?.fullName ?? 'Guest'}</strong>
             <span style={styles.roleChip}>{currentUser?.role ?? '-'}</span>
           </div>
           {canModifyTickets && (
@@ -189,12 +199,11 @@ const MyTicketsPage = () => {
           <button
             type="button"
             onClick={() => {
-              logoutMockUser()
-              window.location.href = '/login'
+              logoutMutation.mutate()
             }}
             style={styles.secondaryButton}
           >
-            Logout
+            {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
           </button>
         </div>
       </div>

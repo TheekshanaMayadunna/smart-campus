@@ -1,11 +1,13 @@
 package com.smartcampus.ticketing.controller;
 
+import com.smartcampus.auth.AuthService;
 import com.smartcampus.ticketing.dto.request.CreateTicketRequest;
 import com.smartcampus.ticketing.dto.request.TicketFilterRequest;
 import com.smartcampus.ticketing.dto.request.UpdateTicketRequest;
 import com.smartcampus.ticketing.dto.response.TicketResponse;
 import com.smartcampus.ticketing.entity.TicketAttachmentEntity;
 import com.smartcampus.ticketing.service.TicketService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -27,6 +29,7 @@ import java.nio.file.Paths;
 public class TicketController {
 
   private final TicketService service;
+  private final AuthService authService;
 
   @PostMapping(consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<TicketResponse> create(
@@ -36,9 +39,9 @@ public class TicketController {
       @RequestParam("description") String description,
       @RequestParam("priority") String priority,
       @RequestParam("preferredContact") String preferredContact,
-      @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
-    // For development, use a dummy user ID
-    Long userId = 1L; // TODO: Replace with proper authentication
+      @RequestParam(value = "attachments", required = false) MultipartFile[] attachments,
+      HttpSession session) {
+    Long userId = authService.getCurrentUser(session).getUserId();
 
     CreateTicketRequest req = new CreateTicketRequest();
     req.setResourceId(resourceId != null && !resourceId.trim().isEmpty() ? Long.parseLong(resourceId) : null);
@@ -54,23 +57,24 @@ public class TicketController {
   @GetMapping
   public Page<TicketResponse> getAllTickets(
       TicketFilterRequest filterRequest,
+      HttpSession session,
       @PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
+    authService.getCurrentUser(session);
     return service.getAllTickets(filterRequest, pageable);
   }
 
   @GetMapping("/my")
   public Page<TicketResponse> getMyTickets(
       TicketFilterRequest filterRequest,
+      HttpSession session,
       @PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
-    // For development, use a dummy user ID
-    Long userId = 1L; // TODO: Replace with proper authentication
+    Long userId = authService.getCurrentUser(session).getUserId();
     return service.getMyTickets(userId, filterRequest, pageable);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<TicketResponse> getTicketById(@PathVariable Long id) {
-    // For development, use a dummy user ID
-    Long userId = 1L; // TODO: Replace with proper authentication
+  public ResponseEntity<TicketResponse> getTicketById(@PathVariable Long id, HttpSession session) {
+    Long userId = authService.getCurrentUser(session).getUserId();
     TicketResponse response = service.getTicketById(id, userId);
     return ResponseEntity.ok(response);
   }
@@ -78,24 +82,22 @@ public class TicketController {
   @PutMapping("/{id}")
   public ResponseEntity<TicketResponse> updateTicket(
       @PathVariable Long id,
-      @Valid @RequestBody UpdateTicketRequest req) {
-    // For development, use a dummy user ID
-    Long userId = 1L; // TODO: Replace with proper authentication
+      @Valid @RequestBody UpdateTicketRequest req,
+      HttpSession session) {
+    Long userId = authService.getCurrentUser(session).getUserId();
     return ResponseEntity.ok(service.updateTicket(id, req, userId));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
-    // For development, use a dummy user ID
-    Long userId = 1L; // TODO: Replace with proper authentication
+  public ResponseEntity<Void> deleteTicket(@PathVariable Long id, HttpSession session) {
+    Long userId = authService.getCurrentUser(session).getUserId();
     service.deleteTicket(id, userId);
     return ResponseEntity.noContent().build();
   }
 
   @GetMapping("/attachments/{attachmentId}")
-  public ResponseEntity<Resource> getAttachment(@PathVariable Long attachmentId) {
-    // For development, use a dummy user ID
-    Long userId = 1L; // TODO: Replace with proper authentication
+  public ResponseEntity<Resource> getAttachment(@PathVariable Long attachmentId, HttpSession session) {
+    Long userId = authService.getCurrentUser(session).getUserId();
 
     TicketAttachmentEntity attachment = service.getAttachment(attachmentId, userId);
     try {

@@ -23,6 +23,11 @@ public class GlobalExceptionHandler {
     return error(HttpStatus.CONFLICT, ex.getMessage());
   }
 
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<Map<String, Object>> handleUnauthorized(UnauthorizedException ex) {
+    return error(HttpStatus.UNAUTHORIZED, ex.getMessage());
+  }
+
   @ExceptionHandler(TicketNotFoundException.class)
   public ResponseEntity<Map<String, Object>> handleNotFound(TicketNotFoundException ex) {
     return error(HttpStatus.NOT_FOUND, ex.getMessage());
