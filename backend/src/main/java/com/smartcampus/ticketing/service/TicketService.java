@@ -5,6 +5,7 @@ import com.smartcampus.ticketing.dto.request.TicketFilterRequest;
 import com.smartcampus.ticketing.dto.request.UpdateTicketRequest;
 import com.smartcampus.ticketing.dto.response.TicketResponse;
 import com.smartcampus.ticketing.entity.IncidentTicketEntity;
+import com.smartcampus.ticketing.entity.TicketAttachmentEntity;
 import com.smartcampus.ticketing.entity.TicketAuditEntity;
 import com.smartcampus.ticketing.entity.UserEntity;
 import com.smartcampus.ticketing.entity.enums.TicketCategory;
@@ -15,6 +16,7 @@ import com.smartcampus.ticketing.exception.BadRequestException;
 import com.smartcampus.ticketing.exception.ConflictException;
 import com.smartcampus.ticketing.exception.TicketNotFoundException;
 import com.smartcampus.ticketing.integration.resource.ResourceValidationPort;
+import com.smartcampus.ticketing.repository.TicketAttachmentRepository;
 import com.smartcampus.ticketing.repository.TicketAuditRepository;
 import com.smartcampus.ticketing.repository.TicketRepository;
 import com.smartcampus.ticketing.repository.UserRepository;
@@ -28,14 +30,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Pattern;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +54,7 @@ public class TicketService {
   private final TicketRepository ticketRepository;
   private final UserRepository userRepository;
   private final TicketAuditRepository ticketAuditRepository;
+  private final TicketAttachmentRepository ticketAttachmentRepository;
   private final ResourceValidationPort resourceValidationPort;
   private final ApplicationEventPublisher eventPublisher;
   @Value("${app.ticket.duplicate-cooldown-minutes:15}")
@@ -59,7 +69,7 @@ public class TicketService {
   );
 
   @Transactional
-  public TicketResponse createTicket(CreateTicketRequest request, Long reporterId) {
+  public TicketResponse createTicket(CreateTicketRequest request, MultipartFile[] attachments, Long reporterId) {
     UserEntity reporter = userRepository.findById(reporterId)
         .orElseGet(() -> {
           // Create default user for development
@@ -113,6 +123,11 @@ public class TicketService {
 
     log.info("Ticket created: id={}, status=OPEN, reporterId={}", saved.getTicketId(), reporterId);
 
+    // Process attachments
+    if (attachments != null && attachments.length > 0) {
+      processAttachments(saved, attachments);
+    }
+
     eventPublisher.publishEvent(new TicketCreatedEvent(saved, reporterId));
 
     TicketResponse response = TicketResponse.fromEntity(saved);
@@ -130,6 +145,9 @@ public class TicketService {
     if (!entity.getReportedBy().getUserId().equals(requesterId)) {
       throw new TicketNotFoundException("Access denied");
     }
+
+    // Load attachments
+    entity.setAttachments(ticketAttachmentRepository.findByTicket_TicketId(id));
 
     return TicketResponse.fromEntity(entity);
   }
@@ -331,5 +349,78 @@ public class TicketService {
     if (entity.getStatus() != TicketStatus.OPEN) {
       throw new BadRequestException("Ticket can only be updated/deleted while status is OPEN");
     }
+  }
+
+  private void processAttachments(IncidentTicketEntity ticket, MultipartFile[] attachments) {
+    Set<String> allowedTypes = Set.of("image/jpeg", "image/jpg", "image/png");
+    long maxSizeBytes = 2 * 1024 * 1024; // 2MB
+
+    if (attachments.length > 3) {
+      throw new BadRequestException("Maximum 3 attachments allowed");
+    }
+
+    Path uploadDir = Paths.get("uploads", "attachments");
+    try {
+      Files.createDirectories(uploadDir);
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to create upload directory", e);
+    }
+
+    for (MultipartFile file : attachments) {
+      if (file.isEmpty()) continue;
+
+      // Validate file type
+      String contentType = file.getContentType();
+      if (!allowedTypes.contains(contentType)) {
+        throw new BadRequestException("Invalid file type. Only JPG, JPEG, PNG allowed");
+      }
+
+      // Validate file size
+      if (file.getSize() > maxSizeBytes) {
+        throw new BadRequestException("File size exceeds 2MB limit");
+      }
+
+      // Generate unique filename
+      String originalFilename = file.getOriginalFilename();
+      String extension = getFileExtension(originalFilename);
+      String uniqueFilename = UUID.randomUUID().toString() + "." + extension;
+      Path filePath = uploadDir.resolve(uniqueFilename);
+
+      try {
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+      } catch (IOException e) {
+        throw new RuntimeException("Failed to save file: " + originalFilename, e);
+      }
+
+      // Save attachment entity
+      TicketAttachmentEntity attachment = TicketAttachmentEntity.builder()
+          .ticket(ticket)
+          .fileName(originalFilename)
+          .filePath(filePath.toString())
+          .fileSize(file.getSize())
+          .contentType(contentType)
+          .build();
+
+      ticketAttachmentRepository.save(attachment);
+    }
+  }
+
+  private String getFileExtension(String filename) {
+    if (filename == null) return "";
+    int lastDotIndex = filename.lastIndexOf('.');
+    return lastDotIndex == -1 ? "" : filename.substring(lastDotIndex + 1).toLowerCase();
+  }
+
+  public TicketAttachmentEntity getAttachment(Long attachmentId, Long requesterId) {
+    TicketAttachmentEntity attachment = ticketAttachmentRepository.findById(attachmentId)
+        .orElseThrow(() -> new TicketNotFoundException("Attachment not found"));
+
+    // Check if user has access to the ticket
+    IncidentTicketEntity ticket = attachment.getTicket();
+    if (!ticket.getReportedBy().getUserId().equals(requesterId)) {
+      throw new TicketNotFoundException("Access denied");
+    }
+
+    return attachment;
   }
 }

@@ -33,6 +33,7 @@ const CreateTicketModal = ({ isOpen, onClose }) => {
       description: '',
       priority: '',
       preferredContact: '',
+      attachments: [],
     },
   })
 
@@ -64,17 +65,22 @@ const CreateTicketModal = ({ isOpen, onClose }) => {
       return
     }
 
-    const payload = {
-      ...values,
-      resourceId: normalizedResourceId,
-      description: values.description.trim(),
-      location: normalizedLocation || null,
-      category: values.category.trim().toUpperCase(),
-      priority: values.priority.trim().toUpperCase(),
-      preferredContact: values.preferredContact.trim(),
+    const formData = new FormData()
+    formData.append('resourceId', normalizedResourceId || '')
+    formData.append('location', normalizedLocation || '')
+    formData.append('category', values.category.trim().toUpperCase())
+    formData.append('description', values.description.trim())
+    formData.append('priority', values.priority.trim().toUpperCase())
+    formData.append('preferredContact', values.preferredContact.trim())
+
+    // Add attachments
+    if (values.attachments && values.attachments.length > 0) {
+      Array.from(values.attachments).forEach((file) => {
+        formData.append('attachments', file)
+      })
     }
 
-    createTicketMutation.mutate(payload)
+    createTicketMutation.mutate(formData)
   }
 
   return (
@@ -191,6 +197,33 @@ const CreateTicketModal = ({ isOpen, onClose }) => {
             />
             {errors.description && (
               <span style={styles.error}>{errors.description.message}</span>
+            )}
+          </label>
+
+          <label style={styles.field}>
+            Attachments (Optional)
+            <input
+              type="file"
+              multiple
+              accept=".jpg,.jpeg,.png"
+              {...register('attachments', {
+                validate: (files) => {
+                  if (!files || files.length === 0) return true
+                  if (files.length > 3) return 'Maximum 3 files allowed'
+                  for (let file of files) {
+                    if (file.size > 2 * 1024 * 1024) return 'Each file must be less than 2MB'
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
+                    if (!allowedTypes.includes(file.type)) return 'Only JPG, JPEG, PNG files allowed'
+                  }
+                  return true
+                },
+              })}
+            />
+            <small style={{ color: '#666', fontSize: '0.8rem' }}>
+              Max 3 images, each up to 2MB (JPG, PNG only)
+            </small>
+            {errors.attachments && (
+              <span style={styles.error}>{errors.attachments.message}</span>
             )}
           </label>
 

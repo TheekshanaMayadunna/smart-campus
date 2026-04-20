@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "incident_tickets")
@@ -66,6 +67,9 @@ public class IncidentTicketEntity {
 
     @Column(columnDefinition = "TEXT")
     private String resolutionNotes;
+
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TicketAttachmentEntity> attachments;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

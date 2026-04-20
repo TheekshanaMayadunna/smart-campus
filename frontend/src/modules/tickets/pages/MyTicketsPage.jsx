@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import CreateTicketModal from '../components/CreateTicketModal'
+import TicketDetailModal from '../components/TicketDetailModal'
 import { useMyTickets } from '../hooks/useMyTickets'
+import { useTicket } from '../hooks/useTicket'
 import { deleteTicket, updateTicket } from '../api/ticketApi'
 
 const categoryOptions = [
@@ -61,10 +63,12 @@ const MyTicketsPage = () => {
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTicket, setEditingTicket] = useState(null)
+  const [viewingTicketId, setViewingTicketId] = useState(null)
   const [currentPage, setCurrentPage] = useState(0)
   const filters = useMemo(() => ({ page: currentPage, size: 10 }), [currentPage])
 
   const { data, isLoading, isError } = useMyTickets(filters)
+  const { data: ticketDetail } = useTicket(viewingTicketId)
   const tickets = getTickets(data)
   const totalPages = data?.totalPages || 0
 
@@ -201,9 +205,19 @@ const MyTicketsPage = () => {
                 {humanize(ticket.priority)}
               </span>
               <small>Category: {humanize(ticket.category)}</small>
+              {ticket.attachmentCount > 0 && (
+                <small>📎 {ticket.attachmentCount} attachment{ticket.attachmentCount > 1 ? 's' : ''}</small>
+              )}
             </div>
 
             <div style={styles.cardActions}>
+              <button
+                type="button"
+                style={styles.secondaryButton}
+                onClick={() => setViewingTicketId(ticket.ticketId)}
+              >
+                View Details
+              </button>
               <button
                 type="button"
                 style={styles.secondaryButton}
@@ -252,6 +266,11 @@ const MyTicketsPage = () => {
       )}
 
       <CreateTicketModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <TicketDetailModal
+        ticket={ticketDetail}
+        isOpen={!!viewingTicketId}
+        onClose={() => setViewingTicketId(null)}
+      />
 
       {editingTicket && (
         <div style={styles.backdrop}>

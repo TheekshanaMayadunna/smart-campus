@@ -7,6 +7,8 @@ import com.smartcampus.ticketing.entity.enums.TicketStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class TicketResponse {
@@ -23,6 +25,7 @@ public class TicketResponse {
   private Long assignedToId;
   private String assignedToName;
   private Integer attachmentCount;
+  private List<AttachmentResponse> attachments;
   private Integer commentCount;
   private String rejectionReason;
   private String resolutionNotes;
@@ -50,7 +53,15 @@ public class TicketResponse {
       response.setAssignedToId(entity.getAssignedTo().getUserId());
       response.setAssignedToName(entity.getAssignedTo().getFirstName() + " " + entity.getAssignedTo().getLastName());
     }
-    response.setAttachmentCount(0); // TODO: implement attachments
+    if (entity.getAttachments() != null) {
+      response.setAttachmentCount(entity.getAttachments().size());
+      response.setAttachments(entity.getAttachments().stream()
+          .map(AttachmentResponse::fromEntity)
+          .collect(Collectors.toList()));
+    } else {
+      response.setAttachmentCount(0);
+      response.setAttachments(List.of());
+    }
     response.setCommentCount(0); // TODO: implement comments
     response.setRejectionReason(entity.getRejectionReason());
     response.setResolutionNotes(entity.getResolutionNotes());
