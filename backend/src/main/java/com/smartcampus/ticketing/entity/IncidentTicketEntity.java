@@ -52,7 +52,10 @@ public class IncidentTicketEntity {
     @JoinColumn(name = "assigned_to")
     private UserEntity assignedTo;
 
-    @Column(nullable = false)
+    @Column(name = "resource_id")
+    private Long resourceId;
+
+    @Column
     private String location;
 
     @Column(nullable = false)

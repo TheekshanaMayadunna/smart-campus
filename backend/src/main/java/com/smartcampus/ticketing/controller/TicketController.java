@@ -2,6 +2,7 @@ package com.smartcampus.ticketing.controller;
 
 import com.smartcampus.ticketing.dto.request.CreateTicketRequest;
 import com.smartcampus.ticketing.dto.request.TicketFilterRequest;
+import com.smartcampus.ticketing.dto.request.UpdateTicketRequest;
 import com.smartcampus.ticketing.dto.response.TicketResponse;
 import com.smartcampus.ticketing.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +60,25 @@ public class TicketController {
     Long userId = Long.parseLong(user.getUsername());
     TicketResponse response = service.getTicketById(id, userId);
     return ResponseEntity.ok(response);
+  }
+
+  @PutMapping("/{id}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<TicketResponse> updateTicket(
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateTicketRequest req,
+      @AuthenticationPrincipal UserDetails user) {
+    Long userId = Long.parseLong(user.getUsername());
+    return ResponseEntity.ok(service.updateTicket(id, req, userId));
+  }
+
+  @DeleteMapping("/{id}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<Void> deleteTicket(
+      @PathVariable Long id,
+      @AuthenticationPrincipal UserDetails user) {
+    Long userId = Long.parseLong(user.getUsername());
+    service.deleteTicket(id, userId);
+    return ResponseEntity.noContent().build();
   }
 }

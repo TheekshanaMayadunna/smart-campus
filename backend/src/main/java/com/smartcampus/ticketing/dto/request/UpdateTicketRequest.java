@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CreateTicketRequest {
+public class UpdateTicketRequest {
   private Long resourceId;
   private String location;
   @NotBlank

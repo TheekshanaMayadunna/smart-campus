@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 public class TicketResponse {
   private Long ticketId;
+  private Long resourceId;
   private String location;
   private TicketCategory category;
   private String description;
@@ -29,10 +30,12 @@ public class TicketResponse {
   private LocalDateTime resolvedAt;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private String warningMessage;
 
   public static TicketResponse fromEntity(IncidentTicketEntity entity) {
     TicketResponse response = new TicketResponse();
     response.setTicketId(entity.getTicketId());
+    response.setResourceId(entity.getResourceId());
     response.setLocation(entity.getLocation());
     response.setCategory(entity.getCategory());
     response.setDescription(entity.getDescription());
