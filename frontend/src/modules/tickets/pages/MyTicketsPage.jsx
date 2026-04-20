@@ -6,6 +6,7 @@ import TicketDetailModal from '../components/TicketDetailModal'
 import { useMyTickets } from '../hooks/useMyTickets'
 import { useTicket } from '../hooks/useTicket'
 import { deleteTicket, updateTicket } from '../api/ticketApi'
+import { getMockUser, logoutMockUser, ROLES } from '../auth/mockAuth'
 
 const categoryOptions = [
   'ELECTRICAL',
@@ -60,6 +61,8 @@ const getTickets = (data) => {
 }
 
 const MyTicketsPage = () => {
+  const currentUser = getMockUser()
+  const canModifyTickets = currentUser?.role === ROLES.STUDENT
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTicket, setEditingTicket] = useState(null)
@@ -153,6 +156,10 @@ const MyTicketsPage = () => {
   }
 
   const handleDelete = (ticket) => {
+    if (!canModifyTickets) {
+      return
+    }
+
     if (ticket.status !== 'OPEN') {
       return
     }
@@ -169,9 +176,27 @@ const MyTicketsPage = () => {
     <main style={styles.container}>
       <div style={styles.header}>
         <h1 style={styles.title}>My Tickets</h1>
-        <button type="button" onClick={() => setIsModalOpen(true)} style={styles.primaryButton}>
-          Create Ticket
-        </button>
+        <div style={styles.headerRight}>
+          <div style={styles.userChip}>
+            <strong>{currentUser?.name ?? 'Guest'}</strong>
+            <span style={styles.roleChip}>{currentUser?.role ?? '-'}</span>
+          </div>
+          {canModifyTickets && (
+            <button type="button" onClick={() => setIsModalOpen(true)} style={styles.primaryButton}>
+              Create Ticket
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              logoutMockUser()
+              window.location.href = '/login'
+            }}
+            style={styles.secondaryButton}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {isLoading && <p>Loading tickets...</p>}
@@ -222,8 +247,14 @@ const MyTicketsPage = () => {
                 type="button"
                 style={styles.secondaryButton}
                 onClick={() => setEditingTicket(ticket)}
-                disabled={ticket.status !== 'OPEN'}
-                title={ticket.status !== 'OPEN' ? 'Only OPEN tickets can be edited' : 'Edit ticket'}
+                disabled={!canModifyTickets || ticket.status !== 'OPEN'}
+                title={
+                  !canModifyTickets
+                    ? 'Only STUDENT can edit in mock mode'
+                    : ticket.status !== 'OPEN'
+                      ? 'Only OPEN tickets can be edited'
+                      : 'Edit ticket'
+                }
               >
                 Edit
               </button>
@@ -231,8 +262,14 @@ const MyTicketsPage = () => {
                 type="button"
                 style={styles.dangerButton}
                 onClick={() => handleDelete(ticket)}
-                disabled={ticket.status !== 'OPEN' || deleteTicketMutation.isPending}
-                title={ticket.status !== 'OPEN' ? 'Only OPEN tickets can be deleted' : 'Delete ticket'}
+                disabled={!canModifyTickets || ticket.status !== 'OPEN' || deleteTicketMutation.isPending}
+                title={
+                  !canModifyTickets
+                    ? 'Only STUDENT can delete in mock mode'
+                    : ticket.status !== 'OPEN'
+                      ? 'Only OPEN tickets can be deleted'
+                      : 'Delete ticket'
+                }
               >
                 Delete
               </button>
@@ -404,6 +441,29 @@ const styles = {
     alignItems: 'center',
     gap: '1rem',
     marginBottom: '1rem',
+  },
+  headerRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+  },
+  userChip: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.45rem',
+    border: '1px solid #dbeafe',
+    backgroundColor: '#f0f9ff',
+    borderRadius: 999,
+    padding: '0.3rem 0.65rem',
+    fontSize: '0.82rem',
+  },
+  roleChip: {
+    backgroundColor: '#0ea5e9',
+    color: '#fff',
+    borderRadius: 999,
+    padding: '0.15rem 0.45rem',
+    fontSize: '0.72rem',
+    fontWeight: 700,
   },
   title: {
     margin: 0,
