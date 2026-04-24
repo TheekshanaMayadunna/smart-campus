@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="170" viewBox="0 0 420 170" role="img" aria-labelledby="title desc">
+  <title id="title">Campus Velora Logo</title>
+  <desc id="desc">CV monogram with Campus Velora wordmark</desc>
+  <rect width="420" height="170" fill="#ffffff"/>
+  <g transform="translate(24,25)">
+    <rect x="0" y="0" width="120" height="120" rx="18" fill="#f3f4f6" stroke="#cbd5e1" stroke-width="3"/>
+    <text x="60" y="78" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="800" fill="#111827">CV</text>
+  </g>
+  <g transform="translate(165,56)">
+    <text x="0" y="26" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="2" fill="#111827">CAMPUS</text>
+    <text x="0" y="66" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="2" fill="#0f172a">VELORA</text>
+  </g>
+</svg>
