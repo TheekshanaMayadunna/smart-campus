@@ -11,9 +11,11 @@ import notificationsIcon from "../../Assests/notification.png";
 import profileIcon from "../../Assests/profile.svg";
 import settingsIcon from "../../Assests/Setting.png";
 import BrandLogo from "../common/BrandLogo.jsx";
+import CampusFooter from "../common/CampusFooter.jsx";
 import { notificationService } from "../../services/notificationService.js";
+import { Moon, Sun } from "lucide-react";
 
-export default function ResourceLayout({ children, onLogout, user }) {
+export default function ResourceLayout({ children, onLogout, user, theme = "light", onToggleTheme }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const isAdmin = user?.role === "ADMIN";
   const isTechnician = user?.role === "TECHNICIAN";
@@ -175,6 +177,22 @@ export default function ResourceLayout({ children, onLogout, user }) {
           )}
         </nav>
 
+        <div className="sideThemeWrap">
+          <button
+            type="button"
+            className="sideThemeToggle"
+            onClick={onToggleTheme}
+            disabled={!onToggleTheme}
+            aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+            title={theme === "dark" ? "Light theme" : "Dark theme"}
+          >
+            <span className="sideThemeToggleIcon" aria-hidden="true">
+              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            </span>
+            <span className="sideThemeToggleLabel">{theme === "dark" ? "Light Theme" : "Dark Theme"}</span>
+          </button>
+        </div>
+
         <div className="logout sideLogoutWrap">
           <button onClick={onLogout} className="sideLogout">
             <span className="sideLogoutIcon">⏏</span>
@@ -184,7 +202,10 @@ export default function ResourceLayout({ children, onLogout, user }) {
       </aside>
 
       <main className="content">
-        <div className="contentInner">{children}</div>
+        <div className="contentInner">
+          {children}
+          <CampusFooter variant="app" />
+        </div>
       </main>
     </div>
   );

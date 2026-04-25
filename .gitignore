@@ -1,48 +1,63 @@
-# Compiled class file
+# ======================
+# JAVA / SPRING BOOT
+# ======================
 *.class
-
-# Log file
 *.log
-
-# BlueJ files
 *.ctxt
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Backend
+# Maven
 backend/target/
+backend/.mvn/
+backend/.maven-home/
+backend/.m2/
 
-# Maven wrapper and build output
-backend/.mvn/wrapper/maven-wrapper.jar
-backend/mvnw.cmd
+# Maven wrapper (optional - you can keep or remove)
+# If you want wrapper -> REMOVE these 2 lines
 backend/mvnw
+backend/mvnw.cmd
 
-# Frontend
+# ======================
+# FRONTEND (REACT / VITE)
+# ======================
 frontend/node_modules/
 frontend/dist/
+frontend/build/
 frontend/.vite/
+
+# Environment files
 frontend/.env
 frontend/.env.local
 frontend/.env.*.local
 
-# IDE
+# ======================
+# IDE / EDITOR
+# ======================
 .idea/
 .vscode/
 *.iml
 
-# Package Files #
-*.war
-*.nar
-*.ear
+# ======================
+# OS FILES
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# ARCHIVES
+# ======================
 *.zip
-*.tar.gz
+*.tar
+*.gz
 *.rar
 
-# MySQL backups and local exports
+# ======================
+# DATABASE / EXPORTS
+# ======================
 *.sql
 *.dump
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# ======================
+# JVM CRASH FILES
+# ======================
 hs_err_pid*
 replay_pid*
