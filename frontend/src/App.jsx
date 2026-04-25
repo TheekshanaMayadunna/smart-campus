@@ -48,7 +48,6 @@ const RequireTicketAuth = ({ children }) => {
 
   return children;
 };
-
 function AppRoutes({ user, onLogin, onLogout, onProfileUpdate, theme, onToggleTheme }) {
   const location = useLocation();
   const [routeLoading, setRouteLoading] = useState(false);
