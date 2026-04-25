@@ -5,36 +5,46 @@ import com.smartcampus.model.resources.ResourceType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalTime;
 
 @Getter
 @Setter
-public class ResourceRequestDto {
-
-    @NotBlank(message = "Name is required")
+@NoArgsConstructor
+@AllArgsConstructor
+public class ResourceRequestDTO {
+    @NotBlank
+    @Size(max = 120)
     private String name;
 
-    @NotNull(message = "Type is required")
+    @NotNull
     private ResourceType type;
 
-    @NotNull(message = "Capacity is required")
-    @Min(value = 0, message = "Capacity cannot be negative")
+    @NotNull
+    @Min(0)
     private Integer capacity;
 
-    @NotBlank(message = "Location is required")
+    @NotBlank
+    @Size(max = 120)
     private String location;
 
-    @NotNull(message = "Availability start is required")
+    @NotNull
     private LocalTime availabilityStart;
 
-    @NotNull(message = "Availability end is required")
+    @NotNull
     private LocalTime availabilityEnd;
 
-    @NotNull(message = "Status is required")
+    @NotNull
     private ResourceStatus status;
 
+    @Size(max = 500)
     private String description;
+
+    @Size(max = 512)
+    private String imageUrl;
 }

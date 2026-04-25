@@ -2,19 +2,21 @@ package com.smartcampus.dto.resources;
 
 import com.smartcampus.model.resources.ResourceStatus;
 import com.smartcampus.model.resources.ResourceType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class ResourceResponseDto {
-
+public class ResourceResponseDTO {
     private Long id;
     private String name;
     private ResourceType type;
@@ -24,8 +26,7 @@ public class ResourceResponseDto {
     private LocalTime availabilityEnd;
     private ResourceStatus status;
     private String description;
-    private Boolean deleted;
+    private String imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<ResourceImageResponseDto> images;
 }
