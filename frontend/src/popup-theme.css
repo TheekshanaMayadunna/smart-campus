@@ -1,0 +1,103 @@
+.sumPopup {
+  border-radius: 28px;
+  border: 1px solid #c8dfd2;
+  box-shadow: 0 16px 32px rgba(20, 64, 46, 0.16);
+  font-family: "Roboto", "Inter", system-ui, -apple-system, sans-serif;
+}
+
+.sumPopupTitle {
+  font-size: 1.22rem;
+  font-weight: 500;
+  margin-bottom: 0.28rem;
+  color: #173a32;
+}
+
+.sumPopupText {
+  color: #4d6b60;
+  font-size: 0.95rem;
+  line-height: 1.52;
+  margin-top: 0.16rem;
+}
+
+.sumPopupActions {
+  margin-top: 1rem;
+  gap: 0.55rem;
+}
+
+.sumPopupBtn {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.52rem 1.05rem;
+  min-width: 94px;
+  font-weight: 500;
+  font-size: 0.87rem;
+  cursor: pointer;
+  transition: background-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.sumPopupBtn:hover {
+  transform: none;
+}
+
+.sumPopupBtnConfirm {
+  background: #1f7a5c;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(31, 122, 92, 0.28);
+}
+
+.sumPopupBtnConfirm:hover {
+  background: #145d47;
+}
+
+.sumPopupBtnCancel {
+  background: #eaf7f0;
+  color: #145d47;
+}
+
+.sumPopupBtnCancel:hover {
+  background: #d9efdf;
+}
+
+.sumPopupInput {
+  border-radius: 14px;
+  border: 1px solid #b7d7c5;
+  background: #ffffff;
+  font-size: 0.93rem;
+  color: #173a32;
+  padding: 0.58rem 0.78rem;
+}
+
+.sumPopupInput:focus {
+  border-color: #1f7a5c;
+  box-shadow: 0 0 0 3px rgba(31, 122, 92, 0.18);
+}
+
+@keyframes sumPopupIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sumPopupOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
+.sumPopupShow {
+  animation: sumPopupIn 140ms ease-out;
+}
+
+.sumPopupHide {
+  animation: sumPopupOut 110ms ease-in forwards;
+}
