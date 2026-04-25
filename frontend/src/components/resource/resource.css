@@ -1,0 +1,611 @@
+:root {
+  --bg-body: #f4f7ff;
+  --bg-rail: #1f235f;
+  --bg-rail-muted: #0f766e;
+  --bg-panel: rgba(255, 255, 255, 0.88);
+  --bg-panel-soft: rgba(245, 248, 255, 0.94);
+  --bg-content: rgba(249, 251, 255, 0.86);
+  --border-subtle: rgba(103, 116, 185, 0.18);
+  --shadow-soft: 0 24px 56px rgba(53, 66, 120, 0.14);
+  --shadow-rail: 0 26px 50px rgba(28, 33, 80, 0.28);
+  --accent: #7c3aed;
+  --accent-soft: rgba(124, 58, 237, 0.14);
+  --text-main: #10233e;
+  --text-muted: #5b6d88;
+}
+
+.appShell {
+  display: flex;
+  min-height: 100vh;
+  background:
+    linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(37, 99, 235, 0) 26%),
+    linear-gradient(220deg, rgba(219, 39, 119, 0.1), rgba(219, 39, 119, 0) 30%),
+    linear-gradient(315deg, rgba(13, 148, 136, 0.12), rgba(13, 148, 136, 0) 34%),
+    linear-gradient(165deg, #f8f5ff 0%, #edf7ff 42%, #fef7ee 100%);
+  color: var(--text-main);
+}
+
+.sideNav {
+  width: 74px;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.82), rgba(243, 247, 255, 0.8)),
+    linear-gradient(180deg, #eef3ff 0%, #f7f2ff 48%, #eefbf7 100%);
+  color: var(--text-main);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-radius: 24px;
+  margin: 18px 18px 18px 12px;
+  border: 1px solid rgba(125, 140, 190, 0.24);
+  box-shadow: 0 24px 60px rgba(49, 61, 120, 0.16);
+  transition: width 0.26s ease;
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+}
+
+.sideNav:hover {
+  width: 264px;
+}
+
+.sideNavBrand {
+  justify-content: center;
+  padding: 4px 0 8px;
+}
+
+.sideNavBrand .brandLogoMark {
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+  background: linear-gradient(140deg, #f8fafc, #e2e8f0);
+  border: 1px solid rgba(100, 116, 139, 0.45);
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.18);
+  transition: width 220ms ease, height 220ms ease, border-radius 220ms ease, background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.sideNavBrand .brandLogoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.sideNav:hover .sideNavBrand {
+  justify-content: center;
+}
+
+.sideNav:hover .sideNavBrand .brandLogoMark {
+  width: 145px;
+  height: 60px;
+  border-radius: 0;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.profile {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 12px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92) 0, rgba(236, 242, 255, 0.9) 58%, rgba(239, 250, 247, 0.92) 100%);
+  border: 1px solid rgba(121, 139, 189, 0.26);
+  box-shadow: 0 16px 28px rgba(54, 66, 118, 0.1);
+}
+
+.sideProfile {
+  padding: 8px 0;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  transition: padding 0.22s ease, justify-content 0.22s ease, gap 0.22s ease;
+}
+
+.sideNav:hover .sideProfile {
+  padding: 8px;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #7c3aed, #2563eb 52%, #0f766e 100%);
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 10px 20px rgba(56, 69, 137, 0.28);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarPlaceholder {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.name {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #173a32;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.email {
+  font-size: 12px;
+  color: #527368;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sideProfileText {
+  opacity: 0;
+  transform: translateX(-10px);
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease, transform 0.22s ease, max-width 0.22s ease;
+}
+
+.sideNav:hover .sideProfileText {
+  opacity: 1;
+  transform: translateX(0);
+  max-width: 200px;
+}
+
+.sideNavMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.sideNavItem {
+  min-height: 42px;
+  border-radius: 12px;
+  opacity: 1;
+  color: var(--text-main);
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
+}
+
+.sideNavItem:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(37, 99, 235, 0.08), rgba(13, 148, 136, 0.1));
+  border-color: rgba(124, 58, 237, 0.24);
+  transform: translateX(2px);
+  box-shadow: 0 10px 20px rgba(54, 66, 118, 0.12);
+}
+
+.sideNavItem.active {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.16), rgba(37, 99, 235, 0.14), rgba(13, 148, 136, 0.14));
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  box-shadow: 0 12px 22px rgba(54, 66, 118, 0.16);
+}
+
+.sideNavIcon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: brightness(0) saturate(100%);
+}
+
+.sideNavIconWrap {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notifyBadge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.sideNavLabel {
+  opacity: 0;
+  transform: translateX(-8px);
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.2s ease, transform 0.22s ease, max-width 0.22s ease;
+  font-size: 15px;
+}
+
+.sideNav:hover .sideNavLabel {
+  opacity: 1;
+  transform: translateX(0);
+  max-width: 180px;
+}
+
+.sideNav:not(:hover) .sideNavItem {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+  gap: 0;
+}
+
+.logout {
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.sideLogoutWrap {
+  padding-top: 10px;
+}
+
+.sideThemeWrap {
+  padding-top: 8px;
+}
+
+.sideThemeToggle {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(124, 144, 192, 0.24);
+  background: linear-gradient(145deg, rgba(255,255,255,0.94), rgba(244,248,255,0.9));
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.sideThemeToggle:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.sideThemeToggleIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.14), rgba(37, 99, 235, 0.14));
+  color: var(--text-main);
+  flex-shrink: 0;
+}
+
+.sideThemeToggleLabel {
+  opacity: 0;
+  transform: translateX(-8px);
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.2s ease, transform 0.22s ease, max-width 0.22s ease;
+}
+
+.sideNav:hover .sideThemeToggleLabel {
+  opacity: 1;
+  transform: translateX(0);
+  max-width: 160px;
+}
+
+.sideNav:not(:hover) .sideThemeToggle {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.logout button,
+.sideLogout {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: linear-gradient(135deg, #7c3aed, #2563eb 50%, #0f766e 100%);
+  color: #f9fafb;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.sideLogout {
+  min-height: 44px;
+  justify-content: flex-start;
+  padding: 9px 10px;
+  gap: 12px;
+}
+
+.sideNav:hover .sideLogout {
+  justify-content: flex-start;
+}
+
+.sideLogoutIcon {
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.logout button:hover,
+.sideLogout:hover {
+  background: linear-gradient(135deg, #6d28d9, #1d4ed8 50%, #0f766e 100%);
+  border-color: rgba(255, 255, 255, 0.36);
+  transform: translateY(-1px);
+}
+
+.logout button:active,
+.sideLogout:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.content {
+  flex: 1;
+  padding: 26px 32px;
+  min-width: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0)),
+    linear-gradient(180deg, #f7f4ff 0, #eef7ff 46%, #fff7ef 100%);
+}
+
+.contentInner {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  animation: pagePop 220ms ease;
+}
+
+@keyframes pagePop {
+  from {
+    opacity: 0.82;
+    transform: translateY(6px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(244, 248, 255, 0.88));
+  border: 1px solid rgba(124, 144, 192, 0.2);
+  border-radius: 18px;
+  box-shadow: 0 24px 48px rgba(51, 63, 118, 0.12);
+  padding: 18px 20px;
+  backdrop-filter: blur(16px);
+}
+
+.quickLink {
+  position: relative;
+  overflow: hidden;
+  min-height: 138px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.quickLink:hover {
+  transform: translateY(-3px);
+  border-color: rgba(124, 58, 237, 0.22);
+  box-shadow: 0 28px 52px rgba(51, 63, 118, 0.16);
+}
+
+.quickLink:nth-child(1) {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(237, 244, 255, 0.94), rgba(239, 250, 247, 0.9));
+}
+
+.quickLink:nth-child(2) {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(245, 238, 255, 0.94), rgba(236, 248, 255, 0.9));
+}
+
+.quickLink:nth-child(3) {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 244, 232, 0.94), rgba(255, 252, 236, 0.9));
+}
+
+.quickLink:nth-child(4) {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 237, 246, 0.94), rgba(255, 246, 232, 0.9));
+}
+
+.quickLink:nth-child(5) {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(236, 255, 248, 0.94), rgba(238, 243, 255, 0.9));
+}
+
+:root[data-theme="dark"] .appShell {
+  background:
+    linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(37, 99, 235, 0) 24%),
+    linear-gradient(220deg, rgba(168, 85, 247, 0.14), rgba(168, 85, 247, 0) 28%),
+    linear-gradient(315deg, rgba(13, 148, 136, 0.12), rgba(13, 148, 136, 0) 32%),
+    linear-gradient(180deg, #040917 0%, #091325 45%, #081120 100%);
+}
+
+:root[data-theme="dark"] .sideNav {
+  background:
+    linear-gradient(160deg, rgba(8, 15, 30, 0.9), rgba(16, 24, 45, 0.88)),
+    linear-gradient(180deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.94));
+  border-color: rgba(125, 145, 191, 0.18);
+  box-shadow: 0 28px 60px rgba(2, 6, 23, 0.34);
+}
+
+:root[data-theme="dark"] .profile,
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .quickLink,
+:root[data-theme="dark"] .sideThemeToggle {
+  background: linear-gradient(145deg, rgba(12, 20, 36, 0.92), rgba(20, 30, 52, 0.88));
+  border-color: rgba(125, 145, 191, 0.18);
+  box-shadow: 0 22px 48px rgba(2, 6, 23, 0.26);
+}
+
+:root[data-theme="dark"] .content {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0)),
+    linear-gradient(180deg, #060d1a 0, #0b1324 46%, #091120 100%);
+}
+
+:root[data-theme="dark"] .name,
+:root[data-theme="dark"] .sideNavItem,
+:root[data-theme="dark"] .sideThemeToggleIcon,
+:root[data-theme="dark"] .quickLink h3 {
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .email,
+:root[data-theme="dark"] .quickLink p,
+:root[data-theme="dark"] .sideNavLabel {
+  color: var(--muted);
+}
+
+:root[data-theme="dark"] .sideNavItem.active,
+:root[data-theme="dark"] .sideNavItem:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.18), rgba(37, 99, 235, 0.16), rgba(13, 148, 136, 0.16));
+  border-color: rgba(139, 92, 246, 0.24);
+}
+
+:root[data-theme="dark"] .sideNavIcon {
+  filter: brightness(0) saturate(100%) invert(93%) sepia(11%) saturate(543%) hue-rotate(184deg) brightness(103%) contrast(101%);
+}
+
+@media (max-width: 1200px) {
+  .sideNav:hover {
+    width: 236px;
+  }
+
+  .content {
+    padding: 22px 24px;
+  }
+}
+
+@media (max-width: 960px) {
+  .appShell {
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  .sideNav {
+    width: auto;
+    margin: 12px;
+    border-radius: 16px;
+    padding: 12px 10px;
+    gap: 10px;
+  }
+
+  .sideNav:hover {
+    width: auto;
+  }
+
+  .sideProfile {
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 8px;
+  }
+
+  .sideProfileText,
+  .sideNavLabel {
+    opacity: 1;
+    transform: none;
+    max-width: 220px;
+  }
+
+  .sideNavMenu {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    margin-top: 0;
+    scrollbar-width: thin;
+  }
+
+  .sideNavItem {
+    flex: 0 0 auto;
+    min-width: 150px;
+    justify-content: flex-start;
+    padding: 8px 10px;
+    gap: 10px;
+  }
+
+  .sideNav:not(:hover) .sideNavItem {
+    justify-content: flex-start;
+    padding-left: 10px;
+    padding-right: 10px;
+    gap: 10px;
+  }
+
+  .logout {
+    margin-top: 2px;
+    padding-top: 4px;
+  }
+
+  .sideLogout {
+    justify-content: center;
+  }
+
+  .content {
+    padding: 14px 12px 18px;
+  }
+
+  .contentInner {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .sideNav {
+    margin: 10px 8px;
+    padding: 10px 8px;
+  }
+
+  .sideProfile {
+    display: none;
+  }
+
+  .sideNavMenu {
+    gap: 6px;
+  }
+
+  .sideNavItem {
+    min-width: 136px;
+  }
+
+  .sideNavLabel {
+    font-size: 14px;
+    max-width: 140px;
+  }
+
+  .content {
+    padding: 10px 8px 14px;
+  }
+
+  .card {
+    border-radius: 14px;
+    padding: 14px;
+  }
+}
