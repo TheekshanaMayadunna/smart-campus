@@ -12,6 +12,8 @@
 
 # Backend
 backend/target/
+backend/src/main/resources/application*.properties
+backend/uploads/
 
 # Maven wrapper and build output
 backend/.mvn/wrapper/maven-wrapper.jar
