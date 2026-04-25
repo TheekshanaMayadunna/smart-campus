@@ -1,6 +1,12 @@
 package com.smartcampus.controller;
 
+import com.smartcampus.config.booking.BookingSecurityContext;
+import com.smartcampus.controller.booking.BookingController;
+import com.smartcampus.model.Auth.User;
+import com.smartcampus.model.booking.BookingStatus;
+import com.smartcampus.service.booking.BookingService;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -10,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +32,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.smartcampus.model.Auth.User;
-import com.smartcampus.model.Booking.BookingStatus;
-import com.smartcampus.repository.Auth.UserRepository;
-import com.smartcampus.service.BookingService;
-
 @WebMvcTest(controllers = BookingController.class)
 @Import(BookingControllerSecurityTest.TestSecurityConfig.class)
 class BookingControllerSecurityTest {
@@ -43,12 +43,14 @@ class BookingControllerSecurityTest {
     private BookingService bookingService;
 
     @MockBean
-    private UserRepository userRepository;
+    private BookingSecurityContext bookingSecurityContext;
 
     @Test
     @WithMockUser(roles = "USER")
     void getAllBookingsRejectsNonAdminUsers() throws Exception {
-        when(userRepository.findByEmail("user")).thenReturn(Optional.of(buildUser(1L, "USER")));
+        User currentUser = buildUser(1L, "USER");
+        when(bookingSecurityContext.getCurrentUser()).thenReturn(currentUser);
+        doThrow(new IllegalStateException("Forbidden: Admins only")).when(bookingSecurityContext).requireAdmin(currentUser);
 
         mockMvc.perform(get("/api/bookings"))
                 .andExpect(status().isBadRequest())
@@ -60,19 +62,21 @@ class BookingControllerSecurityTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void getAllBookingsAllowsAdminsWithFilters() throws Exception {
-        when(userRepository.findByEmail("user")).thenReturn(Optional.of(buildUser(2L, "ADMIN")));
-        when(bookingService.getAllBookings(BookingStatus.APPROVED, LocalDate.parse("2026-04-08"), 3L, 9L))
+        User currentUser = buildUser(2L, "ADMIN");
+        when(bookingSecurityContext.getCurrentUser()).thenReturn(currentUser);
+        when(bookingService.getAllBookings(BookingStatus.APPROVED, LocalDate.parse("2026-04-08"), LocalDate.parse("2026-04-08"), 3L, 9L))
                 .thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/api/bookings")
                 .param("status", "APPROVED")
-                .param("date", "2026-04-08")
+                .param("startDate", "2026-04-08")
+                .param("endDate", "2026-04-08")
                 .param("resourceId", "3")
                 .param("userId", "9"))
                 .andExpect(status().isOk());
 
-        verify(bookingService).getAllBookings(eq(BookingStatus.APPROVED), eq(LocalDate.parse("2026-04-08")), eq(3L),
-                eq(9L));
+        verify(bookingService).getAllBookings(eq(BookingStatus.APPROVED), eq(LocalDate.parse("2026-04-08")),
+                eq(LocalDate.parse("2026-04-08")), eq(3L), eq(9L));
     }
 
     private User buildUser(Long id, String role) {

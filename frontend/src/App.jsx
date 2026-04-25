@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { apiClient } from './api/apiClient';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import authApi from './modules/tickets/api/authApi';
 
 import LoginPage from "./pages/LoginPage";
 import ResourcesPage from "./pages/resources/ResourcesPage";
@@ -21,10 +23,31 @@ import AssetProfilePage from "./pages/resourceInspections/AssetProfilePage";
 import InspectionHistoryPage from "./pages/resourceInspections/InspectionHistoryPage";
 import OverdueInspectionsPage from "./pages/resourceInspections/OverdueInspectionsPage";
 import QrLookupPage from "./pages/resourceInspections/QrLookupPage";
+import MyTicketsPage from './modules/tickets/pages/MyTicketsPage';
+import AuthPage from './modules/tickets/pages/AuthPage';
 
 const AUTH_HEADER_STORAGE_KEY = "sum_auth_header";
 const THEME_STORAGE_KEY = "sum_theme";
 
+const RequireTicketAuth = ({ children }) => {
+  const location = useLocation();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['authUser'],
+    queryFn: () => authApi.me(),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  if (isLoading) {
+    return <main style={{ padding: '1rem' }}>Checking session...</main>;
+  }
+
+  if (isError || !data?.user) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  return children;
+};
 function AppRoutes({ user, onLogin, onLogout, onProfileUpdate, theme, onToggleTheme }) {
   const location = useLocation();
   const [routeLoading, setRouteLoading] = useState(false);
@@ -149,6 +172,15 @@ function AppRoutes({ user, onLogin, onLogout, onProfileUpdate, theme, onToggleTh
           path="/tickets/:id"
           element={renderProtected(<TicketDetailPage onLogout={onLogout} user={user} theme={theme} onToggleTheme={onToggleTheme} />)}
         />
+        <Route
+          path="/my-tickets"
+          element={
+            <RequireTicketAuth>
+              <MyTicketsPage />
+            </RequireTicketAuth>
+          }
+        />
+        <Route path="/auth" element={<AuthPage />} />
         <Route
           path="/notifications"
           element={renderProtected(<NotificationsPage onLogout={onLogout} user={user} theme={theme} onToggleTheme={onToggleTheme} />)}

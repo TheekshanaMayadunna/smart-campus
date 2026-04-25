@@ -15,7 +15,7 @@ const emptyForm = {
   availabilityWindows: "AVAILABLE",
 };
 
-export default function ResourcesPage({ onLogout, user }) {
+export default function ResourcesPage({ onLogout, user, theme = "light", onToggleTheme }) {
   const canManageResources = String(user?.role || "").toUpperCase() === "ADMIN";
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +39,8 @@ export default function ResourcesPage({ onLogout, user }) {
 
     try {
       const data = await resourceService.list(params);
-      setItems(data);
+      const list = Array.isArray(data) ? data : Array.isArray(data?.content) ? data.content : [];
+      setItems(list);
     } finally {
       setLoading(false);
     }
@@ -102,7 +103,7 @@ export default function ResourcesPage({ onLogout, user }) {
   };
 
   return (
-    <ResourceLayout onLogout={onLogout} user={user}>
+    <ResourceLayout onLogout={onLogout} user={user} theme={theme} onToggleTheme={onToggleTheme}>
       <ResourceStats items={items} />
       <ResourceChart items={items} />
 
