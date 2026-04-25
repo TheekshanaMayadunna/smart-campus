@@ -25,6 +25,9 @@ public class User {
     private String studentId;
 
     @Column(nullable = false)
+    private boolean active = true;
+
+    @Column(nullable = false)
     private boolean notifyBookingUpdates = true;
 
     @Column(nullable = false)
@@ -100,6 +103,14 @@ public class User {
 
     public boolean isNotifyBookingUpdates() {
         return notifyBookingUpdates;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void setNotifyBookingUpdates(boolean notifyBookingUpdates) {

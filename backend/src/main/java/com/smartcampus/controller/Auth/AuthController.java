@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.smartcampus.repository.BookingRepository;
-import com.smartcampus.repository.CommentRepository;
+import com.smartcampus.repository.booking.BookingRepository;
+import com.smartcampus.repository.MaintenanceAndTickets.TicketCommentRepository;
 import com.smartcampus.repository.NotificationRepository;
-import com.smartcampus.repository.TicketAttachmentRepository;
-import com.smartcampus.repository.TicketRepository;
+import com.smartcampus.repository.MaintenanceAndTickets.TicketAttachmentRepository;
+import com.smartcampus.repository.MaintenanceAndTickets.TicketRepository;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -53,7 +53,7 @@ public class AuthController {
     private NotificationRepository notificationRepository;
 
     @Autowired
-    private CommentRepository commentRepository;
+    private TicketCommentRepository commentRepository;
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -107,6 +107,7 @@ public class AuthController {
         if (request.getPictureUrl() != null) {
             user.setPictureUrl(request.getPictureUrl());
         }
+        user.setActive(request.getActive() == null || request.getActive());
 
         userRepository.save(user);
 
@@ -165,6 +166,9 @@ public class AuthController {
         target.setPictureUrl((request.getPictureUrl() == null || request.getPictureUrl().trim().isEmpty())
                 ? null
                 : request.getPictureUrl().trim());
+        if (request.getActive() != null) {
+            target.setActive(request.getActive());
+        }
 
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
             target.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -400,6 +404,7 @@ public class AuthController {
                 user.getName(),
                 user.getEmail(),
                 user.getRole(),
-                user.getPictureUrl());
+                user.getPictureUrl(),
+                user.isActive());
     }
 }

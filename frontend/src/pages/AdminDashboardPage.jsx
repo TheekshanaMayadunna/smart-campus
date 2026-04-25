@@ -6,8 +6,9 @@ import { resourceService } from "../services/resourceService.js";
 import { apiClient } from "../api/apiClient.js";
 import AppLoader from "../components/common/AppLoader.jsx";
 
-export default function AdminDashboardPage({ onLogout, user }) {
+export default function AdminDashboardPage({ onLogout, user, theme = "light", onToggleTheme }) {
   const [items, setItems] = useState([]);
+  const [analytics, setAnalytics] = useState({});
   const [loadingDashboard, setLoadingDashboard] = useState(true);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState("");
@@ -24,8 +25,12 @@ export default function AdminDashboardPage({ onLogout, user }) {
     const load = async () => {
       setLoadingDashboard(true);
       try {
-        const data = await resourceService.list({});
-        setItems(data);
+        const [resourcePage, analyticsData] = await Promise.all([
+          resourceService.list({ size: 200 }),
+          resourceService.analytics(),
+        ]);
+        setItems(Array.isArray(resourcePage?.content) ? resourcePage.content : []);
+        setAnalytics(analyticsData || {});
       } catch (err) {
         console.error("Failed to load dashboard data", err);
       } finally {
@@ -63,8 +68,8 @@ export default function AdminDashboardPage({ onLogout, user }) {
   };
 
   return (
-    <ResourceLayout onLogout={onLogout} user={user}>
-      <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: 24 }}>
+    <ResourceLayout onLogout={onLogout} user={user} theme={theme} onToggleTheme={onToggleTheme}>
+      <div style={{ padding: "0 20px 20px", display: "flex", flexDirection: "column", gap: 24 }}>
         <div>
           <h2 style={{ marginBottom: 6 }}>Admin Dashboard</h2>
           <p style={{ margin: 0, color: "var(--muted)" }}>
@@ -78,8 +83,8 @@ export default function AdminDashboardPage({ onLogout, user }) {
           </div>
         ) : (
           <>
-            <ResourceStats items={items} />
-            <ResourceChart items={items} />
+            <ResourceStats items={items} analytics={analytics} />
+            <ResourceChart items={items} analytics={analytics} />
           </>
         )}
 

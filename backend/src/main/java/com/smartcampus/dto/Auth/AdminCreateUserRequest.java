@@ -9,5 +9,6 @@ public class AdminCreateUserRequest {
     private String password;
     private String role;
     private String pictureUrl;
+    private Boolean active;
 }
 

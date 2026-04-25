@@ -1,4 +1,5 @@
 import defaultLogo from "../../Assests/campus-velora-logo.svg";
+import "./brandLogo.css";
 
 export default function BrandLogo({
   className = "",

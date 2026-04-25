@@ -1,5 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import BrandLogo from "../components/common/BrandLogo.jsx";
+import { Moon, Sun } from "lucide-react";
 import "./landing.css";
 import "./public-info.css";
 
@@ -70,7 +71,7 @@ const PAGE_DATA = {
   },
 };
 
-export default function PublicInfoPage({ pageKey = "about" }) {
+export default function PublicInfoPage({ pageKey = "about", theme = "light", onToggleTheme }) {
   const page = PAGE_DATA[pageKey] || PAGE_DATA.about;
 
   return (
@@ -109,6 +110,15 @@ export default function PublicInfoPage({ pageKey = "about" }) {
         </nav>
 
         <div className="landingAuthActions">
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            className="landingIconBtn"
+            aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+            title={theme === "dark" ? "Light theme" : "Dark theme"}
+          >
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
           <Link to="/login" className="landingBtn landingBtnGhost">
             Login
           </Link>

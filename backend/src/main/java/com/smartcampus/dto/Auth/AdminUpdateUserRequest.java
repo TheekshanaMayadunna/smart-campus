@@ -9,4 +9,5 @@ public class AdminUpdateUserRequest {
     private String role;
     private String pictureUrl;
     private String password;
+    private Boolean active;
 }

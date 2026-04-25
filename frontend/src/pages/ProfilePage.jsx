@@ -4,7 +4,7 @@ import { profileService } from "../services/profileService.js";
 import { promptPopup, showWarningPopup } from "../utils/popup";
 import "../components/resource/table.css";
 
-export default function ProfilePage({ onLogout, user, onProfileUpdate }) {
+export default function ProfilePage({ onLogout, user, onProfileUpdate, theme = "light", onToggleTheme }) {
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [studentId, setStudentId] = useState(user?.studentId || "");
@@ -82,7 +82,7 @@ export default function ProfilePage({ onLogout, user, onProfileUpdate }) {
   };
 
   return (
-    <ResourceLayout onLogout={onLogout} user={user}>
+    <ResourceLayout onLogout={onLogout} user={user} theme={theme} onToggleTheme={onToggleTheme}>
       <div className="card" style={{ maxWidth: 720 }}>
         <h2 style={{ marginTop: 0, marginBottom: 6 }}>Edit Profile</h2>
         <p style={{ marginTop: 0, color: "var(--muted)" }}>

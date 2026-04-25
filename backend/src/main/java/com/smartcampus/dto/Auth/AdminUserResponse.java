@@ -11,4 +11,5 @@ public class AdminUserResponse {
     private String email;
     private String role;
     private String pictureUrl;
+    private boolean active;
 }

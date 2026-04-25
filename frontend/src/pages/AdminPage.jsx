@@ -3,7 +3,7 @@ import ResourceLayout from '../components/resource/ResourceLayout.jsx';
 import { apiClient } from '../api/apiClient';
 import { confirmPopup, showErrorPopup } from '../utils/popup';
 
-export default function AdminPage({ onLogout, user, onNavigate }) {
+export default function AdminPage({ onLogout, user, onNavigate, theme = "light", onToggleTheme }) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -57,7 +57,7 @@ export default function AdminPage({ onLogout, user, onNavigate }) {
     };
 
     return (
-        <ResourceLayout onLogout={onLogout} user={user} onNavigate={onNavigate} currentPage="Admin">
+        <ResourceLayout onLogout={onLogout} user={user} onNavigate={onNavigate} currentPage="Admin" theme={theme} onToggleTheme={onToggleTheme}>
             <div style={{ padding: '20px' }}>
                 <header style={{ marginBottom: '30px' }}>
                     <h1 style={{ fontSize: '2.2rem', fontWeight: '800', color: 'var(--text)' }}>Admin Panel</h1>

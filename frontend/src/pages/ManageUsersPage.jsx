@@ -23,7 +23,7 @@ function getErrorMessage(error, fallback) {
   return error?.message || fallback;
 }
 
-export default function ManageUsersPage({ onLogout, user }) {
+export default function ManageUsersPage({ onLogout, user, theme = "light", onToggleTheme }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -36,6 +36,7 @@ export default function ManageUsersPage({ onLogout, user }) {
     role: "USER",
     pictureUrl: "",
     password: "",
+    active: true,
   });
 
   const isEditing = useMemo(() => editingId !== null, [editingId]);
@@ -48,6 +49,7 @@ export default function ManageUsersPage({ onLogout, user }) {
       role: "USER",
       pictureUrl: "",
       password: "",
+      active: true,
     });
   };
 
@@ -82,6 +84,7 @@ export default function ManageUsersPage({ onLogout, user }) {
       role: u.role || "USER",
       pictureUrl: u.pictureUrl || "",
       password: "",
+      active: u.active !== false,
     });
   };
 
@@ -136,7 +139,7 @@ export default function ManageUsersPage({ onLogout, user }) {
   };
 
   return (
-    <ResourceLayout onLogout={onLogout} user={user}>
+    <ResourceLayout onLogout={onLogout} user={user} theme={theme} onToggleTheme={onToggleTheme}>
       <div style={{ display: "grid", gap: 20 }}>
         <div className="card">
           <h2 style={{ margin: 0 }}>Manage Users</h2>
@@ -177,6 +180,13 @@ export default function ManageUsersPage({ onLogout, user }) {
               <input className="input" type="url" value={form.pictureUrl} onChange={(e) => onChange("pictureUrl", e.target.value)} />
             </div>
             <div>
+              <label className="label">Account Status</label>
+              <select className="input" value={form.active ? "ACTIVE" : "INACTIVE"} onChange={(e) => onChange("active", e.target.value === "ACTIVE")}>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+            </div>
+            <div>
               <label className="label">
                 Password {isEditing ? "(optional, set only to change)" : ""}
               </label>
@@ -212,13 +222,14 @@ export default function ManageUsersPage({ onLogout, user }) {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Role</th>
+                  <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {users.length === 0 ? (
                   <tr>
-                    <td colSpan={4}>No users found.</td>
+                    <td colSpan={5}>No users found.</td>
                   </tr>
                 ) : (
                   users.map((u) => (
@@ -226,11 +237,12 @@ export default function ManageUsersPage({ onLogout, user }) {
                       <td>{u.name}</td>
                       <td>{u.email}</td>
                       <td>{u.role}</td>
+                      <td>{u.active === false ? "INACTIVE" : "ACTIVE"}</td>
                       <td style={{ display: "flex", gap: 8 }}>
-                        <button type="button" className="btnMini" onClick={() => startEdit(u)}>
+                        <button type="button" className="btnMini editAction" onClick={() => startEdit(u)}>
                           Edit
                         </button>
-                        <button type="button" className="btnMini danger" onClick={() => handleDelete(u.id)}>
+                        <button type="button" className="btnMini danger deleteAction" onClick={() => handleDelete(u.id)}>
                           Delete
                         </button>
                       </td>
