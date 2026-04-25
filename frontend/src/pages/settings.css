@@ -1,0 +1,245 @@
+.settingsPageWrap {
+  display: grid;
+  gap: 16px;
+}
+
+.settingsHeader {
+  display: grid;
+  gap: 4px;
+}
+
+.settingsTitle {
+  margin: 0;
+}
+
+.settingsSubtitle {
+  margin: 0;
+  color: var(--muted);
+}
+
+.settingsLoaderCard {
+  padding: 24px;
+  text-align: center;
+}
+
+.settingsFormCard {
+  display: grid;
+  gap: 4px;
+}
+
+.settingsAlert {
+  margin-bottom: 12px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.settingsAlertError {
+  border: 1px solid rgba(180, 35, 24, 0.25);
+  background: rgba(180, 35, 24, 0.1);
+  color: #7f1d1d;
+}
+
+.settingsAlertSuccess {
+  border: 1px solid rgba(2, 122, 72, 0.22);
+  background: rgba(2, 122, 72, 0.1);
+  color: #14532d;
+}
+
+.settingsGrid {
+  align-items: start;
+}
+
+.settingsControlsBlock {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.settingsControlList {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(76, 120, 101, 0.32);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(240, 250, 244, 0.8);
+}
+
+.settingsControlItem {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 10px;
+  align-items: center;
+  color: #1f3d35;
+  font-size: 14px;
+}
+
+.settingsControlItem input {
+  margin: 0;
+}
+
+.settingsActionRow {
+  margin-top: 16px;
+}
+
+.settingsLuxuryWrap {
+  display: grid;
+  gap: 24px;
+}
+
+.settingsLuxuryHeader {
+  padding: 28px 30px;
+  border-radius: 24px;
+  border: 1px solid rgba(124, 144, 192, 0.22);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.09), rgba(124, 58, 237, 0) 22%), linear-gradient(220deg, rgba(37, 99, 235, 0.09), rgba(37, 99, 235, 0) 26%), linear-gradient(145deg, rgba(255,255,255,0.94), rgba(244,248,255,0.92), rgba(255,248,240,0.88));
+  box-shadow: 0 26px 48px rgba(51, 63, 118, 0.12);
+}
+
+.settingsLuxuryHeader h1 {
+  margin: 0 0 8px;
+}
+
+.settingsLuxuryHeader p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.settingsLuxuryCard {
+  background: linear-gradient(145deg, rgba(255,255,255,0.94), rgba(244,248,255,0.92), rgba(255,248,240,0.88));
+  border-radius: 24px;
+  padding: 32px;
+  border: 1px solid var(--border);
+  box-shadow: 0 26px 48px rgba(51, 63, 118, 0.12);
+  color: var(--text);
+}
+
+.settingsLuxuryCard h2 {
+  margin: 0 0 24px;
+  font-size: 1.4rem;
+}
+
+.settingsLuxuryAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #7c3aed, #2563eb 52%, #0f766e);
+  overflow: hidden;
+  border: 4px solid rgba(255,255,255,0.9);
+  box-shadow: 0 16px 24px rgba(73, 64, 154, 0.18);
+}
+
+.settingsLuxuryAvatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.settingsLuxuryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.settingsLuxuryLabel {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.settingsLuxuryInput {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.94);
+  color: var(--text);
+}
+
+.settingsLuxuryInputDisabled {
+  background: rgba(242,246,255,0.9);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.settingsLuxuryButton {
+  background: linear-gradient(135deg, #7c3aed, #2563eb 56%, #0f766e);
+  color: #fff;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 14px;
+  font-weight: 700;
+  box-shadow: 0 16px 28px rgba(73, 64, 154, 0.22);
+}
+
+.settingsLuxuryToggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(243,247,255,0.9));
+  border: 1px solid var(--border);
+  box-shadow: 0 14px 24px rgba(51, 63, 118, 0.06);
+}
+
+.settingsLuxuryToggle {
+  width: 46px;
+  height: 24px;
+  border-radius: 12px;
+  background: rgba(148, 163, 184, 0.65);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(51, 63, 118, 0.08);
+  flex: 0 0 auto;
+}
+
+.settingsLuxuryToggle.isOn {
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+}
+
+.settingsLuxuryToggleKnob {
+  position: absolute;
+  right: 26px;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.settingsLuxuryToggle.isOn .settingsLuxuryToggleKnob {
+  right: 4px;
+}
+
+:root[data-theme="dark"] .settingsLuxuryHeader,
+:root[data-theme="dark"] .settingsLuxuryCard,
+:root[data-theme="dark"] .settingsLuxuryToggleRow {
+  background: linear-gradient(145deg, rgba(12,20,36,0.94), rgba(20,30,52,0.88));
+  border-color: rgba(125, 145, 191, 0.18);
+  color: var(--text);
+}
+
+@media (max-width: 720px) {
+  .settingsLuxuryHeader,
+  .settingsLuxuryCard {
+    padding: 22px 18px;
+  }
+
+  .settingsLuxuryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .settingsLuxuryToggleRow {
+    align-items: flex-start;
+  }
+}
