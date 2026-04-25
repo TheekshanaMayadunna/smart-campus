@@ -10,6 +10,7 @@ backend/target/
 backend/.mvn/
 backend/.maven-home/
 backend/.m2/
+backend/uploads/
 
 # Maven wrapper (optional - you can keep or remove)
 # If you want wrapper -> REMOVE these 2 lines
